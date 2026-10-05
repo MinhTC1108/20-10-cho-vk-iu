@@ -1,129 +1,239 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- CUSTOMIZE: Browser tab title -->
-    <title>Thương vk iu lắm áaaaa 💝</title>
-    <!-- Google Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Poppins:wght@300;400;600&display=swap"
-      rel="stylesheet"
-    />
-    <!-- Styles -->
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <!-- Floating Background Elements -->
-    <div class="floating-elements" aria-hidden="true">
-      <!-- Hearts and bears will be added here by JavaScript -->
-    </div>
+// Initialize configuration
+const config = window.VALENTINE_CONFIG;
 
-    <!-- Main Content Container -->
-    <main class="container">
-      <h1 id="valentineTitle">Thương vk iu lắm áaaaa 💝</h1>
+// Validate configuration
+function validateConfig() {
+    const warnings = [];
 
-      <!-- Music Player -->
-      <div id="musicControls" class="music-controls">
-        <button
-          id="musicToggle"
-          class="music-btn"
-          aria-label="Toggle Background Music"
-        >
-          🎵 Play Music
-        </button>
-        <audio id="bgMusic" loop>
-          <source id="musicSource" type="audio/mpeg" />
-          Your browser does not support the audio element.
-        </audio>
-      </div>
+    // Check required fields
+    if (!config.valentineName) {
+        warnings.push("Valentine's name is not set! Using default.");
+        config.valentineName = "😘😘";
+    }
 
-      <!-- First Question -->
-      <section class="question-section" id="question1">
-        <h2 id="question1Text"></h2>
-        <div class="button-group">
-          <button
-            class="cute-btn"
-            onclick="moveButton(this)"
-            id="yesBtn1"
-          ></button>
-          <button
-            class="cute-btn"
-            onclick="moveButton(this)"
-            id="noBtn1"
-          ></button>
-        </div>
-        <!-- CUSTOMIZE: Secret answer text -->
-        <div class="secret-answer">
-          <button
-            class="cute-btn special"
-            onclick="showNextQuestion(2)"
-            id="secretAnswerBtn"
-          ></button>
-        </div>
-      </section>
+    // Validate colors
+    const isValidHex = (hex) => /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(hex);
+    Object.entries(config.colors).forEach(([key, value]) => {
+        if (!isValidHex(value)) {
+            warnings.push(`Invalid color for ${key}! Using default.`);
+            config.colors[key] = getDefaultColor(key);
+        }
+    });
 
-      <!-- Second Question (Love Meter) -->
-      <section class="question-section hidden" id="question2">
-        <h2 id="question2Text"></h2>
-        <!-- Love meter settings: min="0" max="10000" -->
-        <div class="love-meter">
-          <label for="loveMeter" class="sr-only">Love Meter</label>
-          <input
-            type="range"
-            min="0"
-            max="10000"
-            value="100"
-            class="slider"
-            id="loveMeter"
-          />
-          <p>
-            <span class="love-value-container"
-              ><span id="startText"></span> (<span id="loveValue">100</span
-              >%)</span
-            >
-            <span id="extraLove" class="hidden"></span>
-          </p>
-        </div>
-        <button
-          class="cute-btn"
-          onclick="showNextQuestion(3)"
-          id="nextBtn"
-        ></button>
-      </section>
+    // Validate animation values
+    if (parseFloat(config.animations.floatDuration) < 5) {
+        warnings.push("Float duration too short! Setting to 5s minimum.");
+        config.animations.floatDuration = "5s";
+    }
 
-      <!-- Final Question -->
-      <section class="question-section hidden" id="question3">
-        <h2 id="question3Text"></h2>
-        <div class="button-group">
-          <button
-            class="cute-btn final-yes"
-            onclick="celebrate()"
-            id="yesBtn3"
-          ></button>
-          <button
-            class="cute-btn"
-            onclick="moveButton(this)"
-            id="noBtn3"
-          ></button>
-        </div>
-      </section>
+    if (config.animations.heartExplosionSize < 1 || config.animations.heartExplosionSize > 3) {
+        warnings.push("Heart explosion size should be between 1 and 3! Using default.");
+        config.animations.heartExplosionSize = 1.5;
+    }
 
-      <!-- CUSTOMIZE: Celebration message -->
-      <section class="celebration hidden" id="celebration">
-        <h2 id="celebrationTitle"></h2>
-        <p class="celebration-text" id="celebrationMessage"></p>
-        <p class="celebration-text" id="celebrationEmojis"></p>
-      </section>
+    // Log warnings if any
+    if (warnings.length > 0) {
+        console.warn("⚠️ Configuration Warnings:");
+        warnings.forEach(warning => console.warn("- " + warning));
+    }
+}
 
-      
-    </main>
+// Default color values
+function getDefaultColor(key) {
+    const defaults = {
+        backgroundStart: "#ffafbd",
+        backgroundEnd: "#ffc3a0",
+        buttonBackground: "#ff6b6b",
+        buttonHover: "#ff8787",
+        textColor: "#ff4757"
+    };
+    return defaults[key];
+}
 
-    <!-- Scripts -->
-    <script src="config.js"></script>
-    <script src="config-system.js"></script>
-    <script src="state.js"></script>
-    <script src="theme.js"></script>
-    <script src="script.js"></script>
-  </body>
-</html>
+// Set page title
+document.title = config.pageTitle;
+
+// Initialize the page content when DOM is loaded
+window.addEventListener('DOMContentLoaded', () => {
+    // Validate configuration first
+    validateConfig();
+
+    // Set texts from config
+    document.getElementById('valentineTitle').textContent = `${config.valentineName}, 😘😘...`;
+
+    // Set first question texts
+    document.getElementById('question1Text').textContent = config.questions.first.text;
+    document.getElementById('yesBtn1').textContent = config.questions.first.yesBtn;
+    document.getElementById('noBtn1').textContent = config.questions.first.noBtn;
+    document.getElementById('secretAnswerBtn').textContent = config.questions.first.secretAnswer;
+
+    // Set second question texts
+    document.getElementById('question2Text').textContent = config.questions.second.text;
+    document.getElementById('startText').textContent = config.questions.second.startText;
+    document.getElementById('nextBtn').textContent = config.questions.second.nextBtn;
+
+    // Set third question texts
+    document.getElementById('question3Text').textContent = config.questions.third.text;
+    document.getElementById('yesBtn3').textContent = config.questions.third.yesBtn;
+    document.getElementById('noBtn3').textContent = config.questions.third.noBtn;
+
+    // Create initial floating elements
+    createFloatingElements();
+
+    // Setup music player
+    setupMusicPlayer();
+});
+
+// Create floating hearts and bears
+function createFloatingElements() {
+    const container = document.querySelector('.floating-elements');
+
+    // Create hearts
+    config.floatingEmojis.hearts.forEach(heart => {
+        const div = document.createElement('div');
+        div.className = 'heart';
+        div.innerHTML = heart;
+        setRandomPosition(div);
+        container.appendChild(div);
+    });
+
+    // Create bears
+    config.floatingEmojis.bears.forEach(bear => {
+        const div = document.createElement('div');
+        div.className = 'bear';
+        div.innerHTML = bear;
+        setRandomPosition(div);
+        container.appendChild(div);
+    });
+}
+
+// Set random position for floating elements
+function setRandomPosition(element) {
+    element.style.left = Math.random() * 100 + 'vw';
+    element.style.animationDelay = Math.random() * 5 + 's';
+    element.style.animationDuration = 10 + Math.random() * 20 + 's';
+}
+
+// Function to show next question
+function showNextQuestion(questionNumber) {
+    window.appState.setState({ currentStep: questionNumber });
+}
+
+// Function to move the "No" button when clicked
+function moveButton(button) {
+    const x = Math.random() * (window.innerWidth - button.offsetWidth);
+    const y = Math.random() * (window.innerHeight - button.offsetHeight);
+    button.style.position = 'fixed';
+    button.style.left = x + 'px';
+    button.style.top = y + 'px';
+}
+
+// Love meter functionality
+const loveMeter = document.getElementById('loveMeter');
+const loveValue = document.getElementById('loveValue');
+const extraLove = document.getElementById('extraLove');
+
+function setInitialPosition() {
+    loveMeter.value = 100;
+    loveValue.textContent = 100;
+    loveMeter.style.width = '100%';
+}
+
+loveMeter.addEventListener('input', () => {
+    const value = parseInt(loveMeter.value);
+    loveValue.textContent = value;
+    window.appState.setState({ loveValue: value });
+
+    if (value > 100) {
+        extraLove.classList.remove('hidden');
+        const overflowPercentage = (value - 100) / 9900;
+        const extraWidth = overflowPercentage * window.innerWidth * 0.8;
+        loveMeter.style.width = `calc(100% + ${extraWidth}px)`;
+        loveMeter.style.transition = 'width 0.3s';
+
+        if (value >= 5000) {
+            extraLove.classList.add('super-love');
+            extraLove.textContent = config.loveMessages.extreme;
+        } else if (value > 1000) {
+            extraLove.classList.remove('super-love');
+            extraLove.textContent = config.loveMessages.high;
+        } else {
+            extraLove.classList.remove('super-love');
+            extraLove.textContent = config.loveMessages.normal;
+        }
+    } else {
+        extraLove.classList.add('hidden');
+        extraLove.classList.remove('super-love');
+        loveMeter.style.width = '100%';
+    }
+});
+
+// Initialize love meter
+window.addEventListener('DOMContentLoaded', setInitialPosition);
+window.addEventListener('load', setInitialPosition);
+
+// Celebration function
+function celebrate() {
+    window.appState.setState({ currentStep: 'celebration' });
+
+    // Set celebration messages
+    document.getElementById('celebrationTitle').textContent = config.celebration.title;
+    document.getElementById('celebrationMessage').textContent = config.celebration.message;
+    document.getElementById('celebrationEmojis').textContent = config.celebration.emojis;
+
+    // Create heart explosion effect
+    createHeartExplosion();
+}
+
+// Create heart explosion animation
+function createHeartExplosion() {
+    for (let i = 0; i < 50; i++) {
+        const heart = document.createElement('div');
+        const randomHeart = config.floatingEmojis.hearts[Math.floor(Math.random() * config.floatingEmojis.hearts.length)];
+        heart.innerHTML = randomHeart;
+        heart.className = 'heart';
+        document.querySelector('.floating-elements').appendChild(heart);
+        setRandomPosition(heart);
+    }
+}
+
+// Music Player Setup
+function setupMusicPlayer() {
+    const musicControls = document.getElementById('musicControls');
+    const musicToggle = document.getElementById('musicToggle');
+    const bgMusic = document.getElementById('bgMusic');
+    const musicSource = document.getElementById('musicSource');
+
+    if (!musicControls || !musicToggle || !bgMusic || !musicSource) return;
+
+    if (!config.music.enabled) {
+        musicControls.style.display = 'none';
+        return;
+    }
+
+    musicSource.src = config.music.musicUrl;
+    musicSource.type = 'audio/mpeg';
+    bgMusic.volume = config.music.volume || 0.5;
+    bgMusic.load();
+
+    if (config.music.autoplay) {
+        const playPromise = bgMusic.play();
+        if (playPromise !== undefined) {
+            playPromise.then(() => {
+                window.appState.setState({ isMusicPlaying: true });
+            }).catch(error => {
+                console.log('Autoplay prevented by browser. User interaction is required on some browsers.');
+            });
+        }
+    }
+
+    musicToggle.addEventListener('click', () => {
+        if (bgMusic.paused) {
+            bgMusic.play();
+            window.appState.setState({ isMusicPlaying: true });
+        } else {
+            bgMusic.pause();
+            window.appState.setState({ isMusicPlaying: false });
+        }
+    });
+}
