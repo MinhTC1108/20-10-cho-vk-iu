@@ -60,18 +60,18 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Set texts from config
     document.getElementById('valentineTitle').textContent = `${config.valentineName}, 😘😘...`;
-
+    
     // Set first question texts
     document.getElementById('question1Text').textContent = config.questions.first.text;
     document.getElementById('yesBtn1').textContent = config.questions.first.yesBtn;
     document.getElementById('noBtn1').textContent = config.questions.first.noBtn;
     document.getElementById('secretAnswerBtn').textContent = config.questions.first.secretAnswer;
-
+    
     // Set second question texts
     document.getElementById('question2Text').textContent = config.questions.second.text;
     document.getElementById('startText').textContent = config.questions.second.startText;
     document.getElementById('nextBtn').textContent = config.questions.second.nextBtn;
-
+    
     // Set third question texts
     document.getElementById('question3Text').textContent = config.questions.third.text;
     document.getElementById('yesBtn3').textContent = config.questions.third.yesBtn;
@@ -82,12 +82,15 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Setup music player
     setupMusicPlayer();
+
+    // Setup love meter
+    setupLoveMeter();
 });
 
 // Create floating hearts and bears
 function createFloatingElements() {
     const container = document.querySelector('.floating-elements');
-
+    
     // Create hearts
     config.floatingEmojis.hearts.forEach(heart => {
         const div = document.createElement('div');
@@ -129,58 +132,61 @@ function moveButton(button) {
 }
 
 // Love meter functionality
-const loveMeter = document.getElementById('loveMeter');
-const loveValue = document.getElementById('loveValue');
-const extraLove = document.getElementById('extraLove');
+function setupLoveMeter() {
+    const loveMeter = document.getElementById('loveMeter');
+    const loveValue = document.getElementById('loveValue');
+    const extraLove = document.getElementById('extraLove');
 
-function setInitialPosition() {
-    loveMeter.value = 100;
-    loveValue.textContent = 100;
-    loveMeter.style.width = '100%';
-}
+    if (!loveMeter || !loveValue || !extraLove) return;
 
-loveMeter.addEventListener('input', () => {
-    const value = parseInt(loveMeter.value);
-    loveValue.textContent = value;
-    window.appState.setState({ loveValue: value });
-
-    if (value > 100) {
-        extraLove.classList.remove('hidden');
-        const overflowPercentage = (value - 100) / 9900;
-        const extraWidth = overflowPercentage * window.innerWidth * 0.8;
-        loveMeter.style.width = `calc(100% + ${extraWidth}px)`;
-        loveMeter.style.transition = 'width 0.3s';
-
-        if (value >= 5000) {
-            extraLove.classList.add('super-love');
-            extraLove.textContent = config.loveMessages.extreme;
-        } else if (value > 1000) {
-            extraLove.classList.remove('super-love');
-            extraLove.textContent = config.loveMessages.high;
-        } else {
-            extraLove.classList.remove('super-love');
-            extraLove.textContent = config.loveMessages.normal;
-        }
-    } else {
-        extraLove.classList.add('hidden');
-        extraLove.classList.remove('super-love');
+    function setInitialPosition() {
+        loveMeter.value = 100;
+        loveValue.textContent = 100;
         loveMeter.style.width = '100%';
     }
-});
 
-// Initialize love meter
-window.addEventListener('DOMContentLoaded', setInitialPosition);
-window.addEventListener('load', setInitialPosition);
+    loveMeter.addEventListener('input', () => {
+        const value = parseInt(loveMeter.value);
+        loveValue.textContent = value;
+        window.appState.setState({ loveValue: value });
+        
+        if (value > 100) {
+            extraLove.classList.remove('hidden');
+            const overflowPercentage = (value - 100) / 9900;
+            const extraWidth = overflowPercentage * window.innerWidth * 0.8;
+            loveMeter.style.width = `calc(100% + ${extraWidth}px)`;
+            loveMeter.style.transition = 'width 0.3s';
+            
+            // Show different messages based on the value
+            if (value >= 5000) {
+                extraLove.classList.add('super-love');
+                extraLove.textContent = config.loveMessages.extreme;
+            } else if (value > 1000) {
+                extraLove.classList.remove('super-love');
+                extraLove.textContent = config.loveMessages.high;
+            } else {
+                extraLove.classList.remove('super-love');
+                extraLove.textContent = config.loveMessages.normal;
+            }
+        } else {
+            extraLove.classList.add('hidden');
+            extraLove.classList.remove('super-love');
+            loveMeter.style.width = '100%';
+        }
+    });
+
+    setInitialPosition();
+}
 
 // Celebration function
 function celebrate() {
     window.appState.setState({ currentStep: 'celebration' });
-
+    
     // Set celebration messages
     document.getElementById('celebrationTitle').textContent = config.celebration.title;
     document.getElementById('celebrationMessage').textContent = config.celebration.message;
     document.getElementById('celebrationEmojis').textContent = config.celebration.emojis;
-
+    
     // Create heart explosion effect
     createHeartExplosion();
 }
@@ -211,6 +217,7 @@ function setupMusicPlayer() {
         return;
     }
 
+    // Set music source and volume
     musicSource.src = config.music.musicUrl;
     musicSource.type = 'audio/mpeg';
     bgMusic.volume = config.music.volume || 0.5;
