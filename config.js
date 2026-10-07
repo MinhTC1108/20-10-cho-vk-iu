@@ -49,7 +49,7 @@ const CONFIG = {
     // Messages that appear after they say "Yes!"
     celebration: {
         title: "Nhân ngày 20/10 này, a có đôi lời mún gửi đến công chúa của a nè💝💖💝💓",
-        message: "Hôm nay 20/10 là ngày phụ nữ Việt Nam đồng thời là kề ngày kỉ niệm 6 tháng bên nhau của đôi mình, cảm ơn vk iu vì đã không ngại khoảng cách mà vẫn chọn đồng hành bên anh, chúc em có 1 ngày lễ thật hạnh phúc bên gia đình, luôn luôn tràn đầy năng lượng tích cực và đạt được ước mơ mà em hằng mong ước, tương lai dẫu có ra sao, vk vẫn sẽ là người con gài hoàn hảo nhất trong mắt anh, mỗi khi cần a vk cứ nói, a sẵng sàn dành tgian cho vk iu. Thương vk iu nhất trên đờiii 😘😘",
+        message: "Hôm nay 20/10 là ngày phụ nữ Việt Nam đồng thời là kề ngày kỉ niệm 6 tháng bên nhau của đôi mình, a biết văn a tệ nhma những lời sau dây là lời chân thành và thật lòng dành riêng cho vk iu thoi🥰🥰. Cảm ơn vk iu vì đã không ngại khoảng cách mà vẫn chọn đồng hành bên anh, chúc em có 1 ngày lễ thật hạnh phúc bên gia đình, luôn luôn tràn đầy năng lượng tích cực và đạt được ước mơ mà em hằng mong ước, tương lai dẫu có ra sao, vk vẫn sẽ là người con gài hoàn hảo nhất trong mắt anh, mỗi khi cần a vk cứ nói, a sẵng sàn dành tgian cho vk iu. Thương vk iu nhất trên đờiii 😘😘",
     },
 
     // Color scheme for the website
